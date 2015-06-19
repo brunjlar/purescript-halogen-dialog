@@ -1,0 +1,23 @@
+{
+  "name": "purescript-halogen-dialog",
+  "homepage": "https://github.com/brunjlar/purescript-halogen-dialog",
+  "authors": [
+    "Lars Bruenjes <brunjlar@gmail.com>"
+  ],
+  "description": "PureScript/Halogen support for dialogs",
+  "keywords": [
+    "purescript",
+    "halogen"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "purescript-halogen": "~0.4.1"
+  }
+}

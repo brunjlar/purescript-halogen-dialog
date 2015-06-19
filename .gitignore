@@ -1,0 +1,7 @@
+.psci
+.psci_modules
+node_modules
+output
+js
+bower_components
+examples/hello/dist/
