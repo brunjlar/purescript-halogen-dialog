@@ -1,54 +1,74 @@
 -- | The "pure" part of the library. It defines extended signals and a way to combine them to master-slave signals.
 module Halogen.Dialog.Signal
-    ( ExtSF ()
+    ( ExtSF (..)
     , MS (..)
     , runMS
+    , step
     , toMS
+    , toMS'
     ) where
 
-import Data.Bifunctor
+import Data.Bifunctor (Bifunctor, bimap)
 import Data.Either
 import Data.Maybe
+import Data.Profunctor (Profunctor, dimap)
 import Data.Tuple
 import Halogen.Signal
 
--- | `ExtSF` is the type of "extended" signal functions, where a usual signal function is extended by information on when and how to "make an external call".
-type ExtSF i o e =
-    { signal     :: SF1 i o
-    , external   :: i -> o -> Maybe e
-    }
+import Halogen.Dialog.Utils (undefined)
 
--- | `MS` is the output type for a master-slave signal, where `o` is the master signal output and `o'` is the slave signal output.
-newtype MS o o' = MS (Tuple o (Maybe o'))
+-- | `ExtSF` is the type of "extended" signal functions, where a usual signal function is extended by information on when and how to "make an external call".
+newtype ExtSF i o i' o'  = ExtSF
+    { signal     :: SF1 i o
+    , input      :: i' -> i
+    , output     :: i -> o -> Maybe o'
+    }
+    
+-- | `MS` is the output type for a master-slave signal, where `mo` is the master signal output and `so'` is the slave signal output.
+newtype MS mo so = MS (Tuple mo (Maybe so))
 
 -- | Unwraps an `MS` value.
-runMS :: forall o o'. MS o o' -> Tuple o (Maybe o')
+runMS :: forall mo so. MS mo so -> Tuple mo (Maybe so)
 runMS (MS x) = x
 
--- | Combines a master and a slave signal.
-toMS :: forall i o e i' o' e'. ExtSF i o e -> ExtSF i' o' e' -> (e -> i') -> (e' -> i) -> SF1 (Either i i') (MS o o')
-toMS m s f g = ((bimap head head) <$>) machine where
+-- | Advances a signal by one step.
+step :: forall i o. i -> SF1 i o -> SF1 i o
+step i x = runSF (tail x) i
 
-    machine :: SF1 (Either i i') (MS (SF1 i o) (SF1 i' o'))
+-- | Combines a master and a slave signal.
+toMS :: forall mi mo mi' mo' si so si' so'. ExtSF mi mo mi' mo' -> ExtSF si so si' so' -> (mo' -> si') -> (so' -> mi') -> SF1 (Either mi si) (MS mo so)
+toMS (ExtSF m) (ExtSF s) f g = ((bimap head head) <$>) machine where
+
+    machine :: SF1 (Either mi si) (MS (SF1 mi mo) (SF1 si so))
     machine = stateful init update
     
-    init :: MS (SF1 i o) (SF1 i' o')
+    init :: MS (SF1 mi mo) (SF1 si so)
     init = MS (Tuple m.signal Nothing)
     
-    update :: MS (SF1 i o) (SF1 i' o') -> Either i i' -> MS (SF1 i o) (SF1 i' o')
+    update :: MS (SF1 mi mo) (SF1 si so) -> Either mi si -> MS (SF1 mi mo) (SF1 si so)
     update (MS (Tuple x y)) i = MS $ update' x y i
     
-    update' :: SF1 i o -> Maybe (SF1 i' o') -> Either i i' -> Tuple (SF1 i o) (Maybe (SF1 i' o'))
-    update' x y (Left i)         = case m.external i (head x) of
+    update' :: SF1 mi mo -> Maybe (SF1 si so) -> Either mi si -> Tuple (SF1 mi mo) (Maybe (SF1 si so))
+    update' x y (Left i)         = case m.output i (head x) of
         Nothing -> Tuple (step i x) y
-        Just e  -> Tuple x (Just $ step (f e) s.signal)
+        Just e  -> Tuple x (Just $ step (s.input $ f e) s.signal)
     update' x Nothing (Right _)  = Tuple x Nothing
-    update' x (Just y) (Right j) = case s.external j (head y) of
+    update' x (Just y) (Right j) = case s.output j (head y) of
         Nothing -> Tuple x (Just $ step j y)
-        Just e  -> Tuple (step (g e) x) Nothing
-        
-    step :: forall i o. i -> SF1 i o -> SF1 i o
-    step i x = runSF (tail x) i
+        Just e  -> Tuple (step (m.input $ g e) x) Nothing
+    
+-- | A simplified version of `toMS`, where the master signal is not explicitly extended.
+toMS' :: forall mi mo si so si' so'. SF1 mi mo -> ExtSF si so si' so' -> (mi -> mo -> Maybe si') -> (so' -> mi) -> SF1 (Either mi si) (MS mo so)
+toMS' m s o = toMS m' s id where
+    m' :: ExtSF mi mo mi si'
+    m' = ExtSF { signal: m, input: id, output: o }
+    
+instance profunctorExtSF :: Profunctor (ExtSF i o) where
+    dimap f g (ExtSF x) = ExtSF
+        { signal: x.signal
+        , input: x.input <<< f
+        , output: \i o -> g <$> x.output i o
+        }
     
 instance bifunctorMS :: Bifunctor MS where
     bimap f g = MS <<< bimap f (g <$>) <<< runMS

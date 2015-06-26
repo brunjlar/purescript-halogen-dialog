@@ -11,7 +11,6 @@ This module defines an extended dialog (slave) signal for posing yes-no question
 data YesNo
   = Yes 
   | No 
-  | Init 
 ```
 
 The input type for the extended yes-no dialog signal.
@@ -19,7 +18,7 @@ The input type for the extended yes-no dialog signal.
 #### `yesNo`
 
 ``` purescript
-yesNo :: ExtSF YesNo Unit Boolean
+yesNo :: ExtSF (Maybe YesNo) Unit Unit YesNo
 ```
 
 The extended yes-no dialog signal.
@@ -27,7 +26,7 @@ The extended yes-no dialog signal.
 #### `renderYesNo`
 
 ``` purescript
-renderYesNo :: String -> Render YesNo Unit
+renderYesNo :: String -> Render (Maybe YesNo) Unit
 ```
 
 Renders the yes-no signal.

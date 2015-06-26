@@ -8,7 +8,8 @@ The "pure" part of the library. It defines extended signals and a way to combine
 #### `ExtSF`
 
 ``` purescript
-type ExtSF i o e = { external :: i -> o -> Maybe e, signal :: SF1 i o }
+newtype ExtSF i o i' o'
+  = ExtSF { output :: i -> o -> Maybe o', input :: i' -> i, signal :: SF1 i o }
 ```
 
 `ExtSF` is the type of "extended" signal functions, where a usual signal function is extended by information on when and how to "make an external call".
@@ -16,27 +17,50 @@ type ExtSF i o e = { external :: i -> o -> Maybe e, signal :: SF1 i o }
 #### `MS`
 
 ``` purescript
-newtype MS o o'
-  = MS (Tuple o (Maybe o'))
+newtype MS mo so
+  = MS (Tuple mo (Maybe so))
 ```
 
-`MS` is the output type for a master-slave signal, where `o` is the master signal output and `o'` is the slave signal output.
+`MS` is the output type for a master-slave signal, where `mo` is the master signal output and `so'` is the slave signal output.
 
 #### `runMS`
 
 ``` purescript
-runMS :: forall o o'. MS o o' -> Tuple o (Maybe o')
+runMS :: forall mo so. MS mo so -> Tuple mo (Maybe so)
 ```
 
 Unwraps an `MS` value.
 
+#### `step`
+
+``` purescript
+step :: forall i o. i -> SF1 i o -> SF1 i o
+```
+
+Advances a signal by one step.
+
 #### `toMS`
 
 ``` purescript
-toMS :: forall i o e i' o' e'. ExtSF i o e -> ExtSF i' o' e' -> (e -> i') -> (e' -> i) -> SF1 (Either i i') (MS o o')
+toMS :: forall mi mo mi' mo' si so si' so'. ExtSF mi mo mi' mo' -> ExtSF si so si' so' -> (mo' -> si') -> (so' -> mi') -> SF1 (Either mi si) (MS mo so)
 ```
 
 Combines a master and a slave signal.
+
+#### `toMS'`
+
+``` purescript
+toMS' :: forall mi mo si so si' so'. SF1 mi mo -> ExtSF si so si' so' -> (mi -> mo -> Maybe si') -> (so' -> mi) -> SF1 (Either mi si) (MS mo so)
+```
+
+A simplified version of `toMS`, where the master signal is not explicitly extended.
+
+#### `profunctorExtSF`
+
+``` purescript
+instance profunctorExtSF :: Profunctor (ExtSF i o)
+```
+
 
 #### `bifunctorMS`
 

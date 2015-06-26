@@ -17,20 +17,18 @@ import qualified Halogen.HTML.Attributes as A
 import qualified Halogen.HTML.Events as E
     
 -- | The input type for the extended yes-no dialog signal.
-data YesNo = Yes | No | Init
+data YesNo = Yes | No
 
 -- | The extended yes-no dialog signal.
-yesNo :: ExtSF YesNo Unit Boolean
-yesNo = { signal  : stateful unit \_ _ -> unit
-        , external: external
-        } where
-    external :: YesNo -> Unit -> Maybe Boolean
-    external Yes  _ = Just true
-    external No   _ = Just false
-    external Init _ = Nothing
+yesNo :: ExtSF (Maybe YesNo) Unit Unit YesNo
+yesNo = ExtSF 
+    { signal : stateful unit \_ _ -> unit
+    , input  : \_ -> Nothing
+    , output : \x _ -> x
+    }
     
 -- | Renders the yes-no signal.
-renderYesNo :: String -> Render YesNo Unit
+renderYesNo :: String -> Render (Maybe YesNo) Unit
 renderYesNo question _ = H.div
     [ A.style (A.styles $ fromList
         [ Tuple "width" "150px"
@@ -38,6 +36,6 @@ renderYesNo question _ = H.div
         , Tuple "padding" "10px"
         ])]
     [ H.p_ [H.text question]
-    , H.button [E.onclick $ E.input \_ -> Yes] [H.text "Yes"]
-    , H.button [E.onclick $ E.input \_ -> No] [H.text "No"]
+    , H.button [E.onclick $ E.input \_ -> Just Yes] [H.text "Yes"]
+    , H.button [E.onclick $ E.input \_ -> Just No] [H.text "No"]
     ]
