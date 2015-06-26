@@ -8,7 +8,7 @@ This module helps rendering master-slave signals.
 #### `Render`
 
 ``` purescript
-type Render i o = forall p m. (Applicative m) => o -> H.HTML p (m i)
+type Render i o = forall p m. (Alternative m) => o -> H.HTML p (m i)
 ```
 
 Type synonym for rendering functions.

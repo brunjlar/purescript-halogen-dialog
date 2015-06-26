@@ -29,7 +29,7 @@ The extended yes-no dialog signal.
 renderYesNo :: String -> Render (Maybe YesNo) Unit
 ```
 
-Renders the yes-no signal.
+Renders the yes-no dialog.
 
 
 

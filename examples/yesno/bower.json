@@ -1,5 +1,5 @@
 {
-  "name": "halogen-dialog-hello",
+  "name": "halogen-dialog-yesno",
   "version": "1.0.0",
   "moduleType": [
     "node"

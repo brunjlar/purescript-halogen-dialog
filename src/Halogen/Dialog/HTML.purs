@@ -4,6 +4,7 @@ module Halogen.Dialog.HTML
     , renderMS
     ) where
    
+import Control.Alternative
 import Data.Either
 import Data.Maybe
 import Data.StrMap (singleton, fromList)
@@ -15,7 +16,7 @@ import qualified Halogen.HTML.Attributes as A
 import qualified Halogen.HTML.Events as E
     
 -- | Type synonym for rendering functions.
-type Render i o = forall p m. (Applicative m) => o -> H.HTML p (m i)
+type Render i o = forall p m. (Alternative m) => o -> H.HTML p (m i)
     
 -- | Renders a master-slave signal.
 renderMS :: forall i o i' o'. Render i o -> Render i' o' -> Render (Either i i') (MS o o')

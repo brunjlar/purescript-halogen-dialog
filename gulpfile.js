@@ -30,6 +30,10 @@ var paths = {
             src: 'src/Halogen/Dialog/Utils.purs'
         },
         {
+            dest: 'docs/Halogen-Dialog-Input.md',
+            src: 'src/Halogen/Dialog/Input.purs'
+        },
+        {
             dest: 'docs/Halogen-Dialog-YesNo.md',
             src: 'src/Halogen/Dialog/YesNo.purs'
         }        

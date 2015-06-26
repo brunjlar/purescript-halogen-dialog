@@ -1,5 +1,6 @@
 module Main where
 
+import Control.Alternative
 import Data.Either (Either (..))
 import Data.Maybe (Maybe (..))
 import Data.Tuple (Tuple (..))
@@ -44,11 +45,11 @@ renderMaster :: Render MasterInput MasterOutput
 renderMaster s = case s of
     NotLaunched -> H.div_ [headline, button]
     Launched -> H.div_ [headline, launched] where
-        headline = H.h1_ [H.text "PureScript Halogen Dialog - Hello, World!"]
+        headline = H.h1_ [H.text "PureScript Halogen Yes/No Dialog"]
         button = H.button [E.onclick $ E.input \_ -> OrderLaunch] [H.text "Launch Missiles!"]
         launched = H.text "Missiles launched!"
 
-ui :: forall p m. (Applicative m) => Component p m (Either MasterInput (Maybe YesNo)) (Either MasterInput (Maybe YesNo))
+ui :: forall p m. (Alternative m) => Component p m (Either MasterInput (Maybe YesNo)) (Either MasterInput (Maybe YesNo))
 ui = component (render <$> ms) where
     render :: Render (Either MasterInput (Maybe YesNo)) (MS MasterOutput Unit)
     render = renderMS renderMaster (renderYesNo "Are you sure?")

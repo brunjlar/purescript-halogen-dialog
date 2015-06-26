@@ -4,4 +4,5 @@ node_modules
 output
 js
 bower_components
-examples/hello/dist/
+examples/input/dist/
+examples/yesno/dist/

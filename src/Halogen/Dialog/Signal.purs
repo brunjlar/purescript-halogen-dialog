@@ -15,8 +15,6 @@ import Data.Profunctor (Profunctor, dimap)
 import Data.Tuple
 import Halogen.Signal
 
-import Halogen.Dialog.Utils (undefined)
-
 -- | `ExtSF` is the type of "extended" signal functions, where a usual signal function is extended by information on when and how to "make an external call".
 newtype ExtSF i o i' o'  = ExtSF
     { signal     :: SF1 i o

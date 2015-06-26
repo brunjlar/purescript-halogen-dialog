@@ -27,7 +27,7 @@ yesNo = ExtSF
     , output : \x _ -> x
     }
     
--- | Renders the yes-no signal.
+-- | Renders the yes-no dialog.
 renderYesNo :: String -> Render (Maybe YesNo) Unit
 renderYesNo question _ = H.div
     [ A.style (A.styles $ fromList
