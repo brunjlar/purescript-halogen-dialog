@@ -11,7 +11,8 @@
     "output"
   ],
   "dependencies": {
-    "purescript-halogen-dialog": "master",
-    "purescript-halogen": "~0.4.1"
+    "purescript-halogen": "~0.4.1",
+    "purescript-halogen-bootstrap": "~0.1.0",
+    "purescript-halogen-dialog": "master"
   }
 }

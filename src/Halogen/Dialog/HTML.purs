@@ -29,7 +29,7 @@ renderMS r r' = render where
             [ renderMaster x ]
         , H.div
             [ A.style (A.styles $ fromList
-                [ Tuple "opacity" "0.7"
+                [ Tuple "opacity" "0.5"
                 , Tuple "position" "fixed"
                 , Tuple "width" "100%"
                 , Tuple "height" "100%"

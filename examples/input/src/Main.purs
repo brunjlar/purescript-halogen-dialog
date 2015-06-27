@@ -13,7 +13,9 @@ import Halogen.Dialog.Utils (appendToBody)
 import Halogen.Signal (SF1(), stateful)
 
 import qualified Halogen.HTML as H
+import qualified Halogen.HTML.Attributes as A
 import qualified Halogen.HTML.Events as E
+import qualified Halogen.Themes.Bootstrap3 as B
 
 -- | The master input.
 data MasterInput = OpenDialog | Name String | Idle
@@ -40,10 +42,15 @@ ms = toMS' master input f g where
     
 -- | Renders the master signal.
 renderMaster :: Render MasterInput (Maybe String)
-renderMaster s = H.div_ 
+renderMaster s = H.div
+    [ A.class_ B.container ]
     [ H.h1_ [H.text "PureScript Halogen Input Dialog"]
-    , H.p_ [H.text $ greeting s]
-    , H.button [E.onclick $ E.input \_ -> OpenDialog] [H.text $ buttonText s]
+    , H.p [ A.class_ B.lead ] [H.text $ greeting s]
+    , H.button
+        [ A.classes [B.btn, B.btnPrimary, B.btnLg ]
+        , E.onclick $ E.input \_ -> OpenDialog
+        ]
+        [ H.text $ buttonText s ]
     ] where
     
     greeting :: Maybe String -> String

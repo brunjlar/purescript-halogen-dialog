@@ -13,7 +13,9 @@ import Halogen.Dialog.Utils (appendToBody)
 import Halogen.Signal (SF1(), stateful)
 
 import qualified Halogen.HTML as H
+import qualified Halogen.HTML.Attributes as A
 import qualified Halogen.HTML.Events as E
+import qualified Halogen.Themes.Bootstrap3 as B
   
 -- | The master output.
 data MasterOutput = NotLaunched | Launched
@@ -43,11 +45,17 @@ ms = toMS' master yesNo f g where
 -- | Renders the master signal.
 renderMaster :: Render MasterInput MasterOutput
 renderMaster s = case s of
-    NotLaunched -> H.div_ [headline, button]
-    Launched -> H.div_ [headline, launched] where
+    NotLaunched -> H.div [A.class_ B.container] [headline, button]
+    Launched -> H.div [A.class_ B.container] [headline, launched] where
         headline = H.h1_ [H.text "PureScript Halogen Yes/No Dialog"]
-        button = H.button [E.onclick $ E.input \_ -> OrderLaunch] [H.text "Launch Missiles!"]
-        launched = H.text "Missiles launched!"
+        button = H.button
+            [ A.classes [B.btn, B.btnDanger, B.btnLg ]
+            , E.onclick $ E.input \_ -> OrderLaunch
+            ]
+            [ H.text "Launch Missiles!" ]
+        launched = H.p
+            [ A.class_ B.lead ]
+            [ H.text "Missiles launched!" ]
 
 ui :: forall p m. (Alternative m) => Component p m (Either MasterInput (Maybe YesNo)) (Either MasterInput (Maybe YesNo))
 ui = component (render <$> ms) where

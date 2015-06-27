@@ -6,7 +6,6 @@ module Halogen.Dialog.YesNo
     ) where
      
 import Data.Maybe
-import Data.StrMap (fromList)
 import Data.Tuple
 import Halogen.Dialog.HTML
 import Halogen.Dialog.Signal
@@ -15,6 +14,7 @@ import Halogen.Signal (SF1(), stateful)
 import qualified Halogen.HTML as H
 import qualified Halogen.HTML.Attributes as A
 import qualified Halogen.HTML.Events as E
+import qualified Halogen.Themes.Bootstrap3 as B
     
 -- | The input type for the extended yes-no dialog signal.
 data YesNo = Yes | No
@@ -29,13 +29,21 @@ yesNo = ExtSF
     
 -- | Renders the yes-no dialog.
 renderYesNo :: String -> Render (Maybe YesNo) Unit
-renderYesNo question _ = H.div
-    [ A.style (A.styles $ fromList
-        [ Tuple "width" "150px"
-        , Tuple "height" "80px"
-        , Tuple "padding" "10px"
-        ])]
-    [ H.p_ [H.text question]
-    , H.button [E.onclick $ E.input \_ -> Just Yes] [H.text "Yes"]
-    , H.button [E.onclick $ E.input \_ -> Just No] [H.text "No"]
+renderYesNo question _ = H.div [ A.class_ B.modalContent ]
+    [ H.div [ A.class_ B.modalBody ]
+        [ H.p [ A.class_ B.lead ] [ H.text question ] ]
+    , H.div [ A.class_ B.modalFooter ]
+        [ H.div [ A.class_ B.btnGroup ]
+            [ H.button
+                [ A.classes [B.btn, B.btnPrimary ]
+                , E.onclick $ E.input \_ -> Just Yes
+                ]
+                [ H.text "Yes" ]
+            , H.button
+                [ A.classes [B.btn, B.btnDefault ]
+                , E.onclick $ E.input \_ -> Just No
+                ]
+                [ H.text "No" ]
+            ]
+        ]
     ]
