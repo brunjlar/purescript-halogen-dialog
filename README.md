@@ -13,3 +13,6 @@ Apart from the general framework, two simple, reusable dialogs are provided:
 
 - a yes/no dialog (see [example](examples/yesno/))
 - a text input dialog (see [example](examples/input/))
+
+![Yes/No Screenshot](examples/yesno/YesNo.png)
+![Input Screenshot](examples/input/Input.png)
