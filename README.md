@@ -1,4 +1,4 @@
-# purescript-halogen
+# purescript-halogen-dialog
 
 [![Build Status](https://travis-ci.org/brunjlar/purescript-halogen-dialog.svg?branch=master)](https://travis-ci.org/brunjlar/purescript-halogen-dialog)
 
