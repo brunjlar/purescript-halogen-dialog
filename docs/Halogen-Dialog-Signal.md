@@ -12,7 +12,11 @@ newtype ExtSF i o i' o'
   = ExtSF { output :: i -> o -> Maybe o', input :: i' -> i, signal :: SF1 i o }
 ```
 
-`ExtSF` is the type of "extended" signal functions, where a usual signal function is extended by information on when and how to "make an external call".
+`ExtSF` is the type of "extended" signals, where a usual signal is extended by information on when and how to "make an external call".
+Such an extended signal is a (wrapped) record, consisting of a normal signal `SF1 i o`,
+an `input` function, which transforms an external input of type `i'` into a "normal" input of type `i`,
+and an `output` function. This `output` function determines if, based on input and `head` (of type `o`), an external call should be made, and if so,
+which external output of type `o'` should be used to make that call.
 
 #### `MS`
 

@@ -29,10 +29,10 @@ yesNo = ExtSF
     
 -- | Renders the yes-no dialog.
 renderYesNo :: String -> Render (Maybe YesNo) Unit
-renderYesNo question _ = H.div [ A.class_ B.modalContent ]
-    [ H.div [ A.class_ B.modalBody ]
-        [ H.p [ A.class_ B.lead ] [ H.text question ] ]
-    , H.div [ A.class_ B.modalFooter ]
+renderYesNo question _ = renderDialog
+    Nothing
+    [ H.p [ A.class_ B.lead ] [ H.text question ] ] $
+    Just
         [ H.div [ A.class_ B.btnGroup ]
             [ H.button
                 [ A.classes [B.btn, B.btnPrimary ]
@@ -46,4 +46,3 @@ renderYesNo question _ = H.div [ A.class_ B.modalContent ]
                 [ H.text "No" ]
             ]
         ]
-    ]

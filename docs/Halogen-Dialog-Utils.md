@@ -21,5 +21,13 @@ undefined :: forall a. a
 
 A convenience "value" of any type (mostly used for development).
 
+#### `filterJust`
+
+``` purescript
+filterJust :: forall a. [Maybe a] -> [a]
+```
+
+Given a list of `Maybe`'s, `filterJust` discards all `Nothing`'s and unwraps the `Just`'s.
+
 
 

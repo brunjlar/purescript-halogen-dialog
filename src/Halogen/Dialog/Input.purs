@@ -36,20 +36,20 @@ input = ExtSF
     
 -- | Renders the input dialog.
 renderInput :: String -> Render (Either String Boolean) String
-renderInput text s = H.div [ A.class_ B.modalContent ]
-    [ H.div [ A.class_ B.modalBody ]
-        [ H.div [ A.class_ B.formGroup ]
-            [ H.label_ [ H.text text ]
-            , H.input
-                [ A.type_ "text"
-                , A.class_ B.formControl 
-                , F.onValueChanged (E.input Left)
-                , A.value s
-                ]
-                []
+renderInput text s = renderDialog
+    Nothing
+    [ H.div [ A.class_ B.formGroup ]
+        [ H.label_ [ H.text text ]
+        , H.input
+            [ A.type_ "text"
+            , A.class_ B.formControl 
+            , F.onValueChanged (E.input Left)
+            , A.value s
             ]
+            []
         ]
-    , H.div [ A.class_ B.modalFooter ]
+    ] $
+    Just 
         [ H.div [ A.class_ B.btnGroup ]
             [ H.button
                 [ A.classes [B.btn, B.btnPrimary]
@@ -63,4 +63,3 @@ renderInput text s = H.div [ A.class_ B.modalContent ]
                 [ H.text "Cancel" ]
             ]
         ]
-    ]

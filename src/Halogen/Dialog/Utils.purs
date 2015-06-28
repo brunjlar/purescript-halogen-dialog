@@ -2,9 +2,12 @@
 module Halogen.Dialog.Utils
     ( appendToBody
     , undefined
+    , filterJust
     ) where
 
 import Control.Monad.Eff (Eff())
+import Data.Foldable (foldr)
+import Data.Maybe (Maybe (), maybe)
 import DOM (Node(), DOM())
     
 -- | Appends an element to the body of the page.
@@ -17,3 +20,8 @@ foreign import appendToBody
 
 -- | A convenience "value" of any type (mostly used for development).
 foreign import undefined :: forall a. a
+
+-- | Given a list of `Maybe`'s, `filterJust` discards all `Nothing`'s and unwraps the `Just`'s.
+filterJust :: forall a. [Maybe a] -> [a]
+filterJust = foldr (maybe id (:)) []
+    
